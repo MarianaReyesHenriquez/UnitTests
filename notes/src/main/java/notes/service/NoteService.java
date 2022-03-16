@@ -13,39 +13,37 @@ import notes.model.Nota;
 
 @Service
 public class NoteService implements INoteService {
-    Logger logger = LoggerFactory.getLogger(NoteService.class);
+  Logger logger = LoggerFactory.getLogger(NoteService.class);
 
-    @Autowired
-    private NotesRepository repository;
+  @Autowired
+  private NotesRepository repository;
 
-    NoteService(NotesRepository repository) {
+  NoteService(NotesRepository repository) {
     this.repository = repository;
   }
 
   public Nota guardar(Nota nota) {
-    Nota _nota = repository.save(nota);
-
-    return _nota;
+    return repository.save(nota);
   }
 
   public List<Nota> recuperarTodasNotas() {
-    
+
     return repository.findAll();
   }
 
   public Nota recuperarNota(Long id) {
 
-      return repository.findById(id).orElseThrow(() -> new NotaNotFoundException(id));
+    return repository.findById(id).orElseThrow(() -> new NotaNotFoundException(id));
   }
 
   public Nota actualizarNota(Nota nota, Long id) {
 
     return repository.findById(id)
-    .map(notaActualizada -> {
-        notaActualizada.setText(nota.getText());
-        return repository.save(notaActualizada);
-    })
-    .orElseThrow(() -> new NotaNotFoundException(id));
+        .map(notaActualizada -> {
+          notaActualizada.setText(nota.getText());
+          return repository.save(notaActualizada);
+        })
+        .orElseThrow(() -> new NotaNotFoundException(id));
   }
 
   public void borrarTodasNotas() {
@@ -54,10 +52,8 @@ public class NoteService implements INoteService {
   }
 
   public void borrarNota(Long id) {
-      
+
     repository.deleteById(id);
   }
-  
-
 
 }

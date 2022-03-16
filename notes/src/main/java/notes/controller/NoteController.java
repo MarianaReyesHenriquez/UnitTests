@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
 
 import notes.model.Nota;
 import notes.model.Temperatura;
@@ -22,8 +24,8 @@ import notes.service.ITimeService;
 public class NoteController {
     Logger logger = LoggerFactory.getLogger(NoteController.class);
 
-    NoteController() {}
-
+    NoteController() {
+    }
 
     @Autowired
     private ITimeService timeService;
@@ -31,47 +33,47 @@ public class NoteController {
     @Autowired
     private INoteService noteService;
 
-
     @PostMapping("/notes")
-    public Nota crearNota(@RequestBody Nota nota){
+    @ResponseStatus(HttpStatus.CREATED)
+    public Nota crearNota(@RequestBody Nota nota) {
         logger.info("he entrado por POST/notes");
-        
-        //Se obtiene Temperatura de Madrid
+
+        // Se obtiene Temperatura de Madrid
         Temperatura temp = timeService.getByCity("Madrid");
         return noteService.guardar(new Nota(nota.getText(), temp.getTemp()));
     }
 
-    //Todas las notas
+    // Todas las notas
     @GetMapping("/notes")
-    List<Nota> all() {
+    List<Nota> recuperarNotas() {
         logger.info("he entrado por GET/notes");
 
         return noteService.recuperarTodasNotas();
     }
 
-    //Una nota específica
+    // Una nota específica
     @GetMapping("/notes/{id}")
     Nota recuperarNota(@PathVariable Long id) {
         logger.info("he entrado por GET/notes/{id}");
-    
+
         return noteService.recuperarNota(id);
     }
 
     @PutMapping("/notes/{id}")
     Nota actualizarNota(@RequestBody Nota crearNota, @PathVariable Long id) {
         logger.info("he entrado por PUT/notes/{id}");
-        
+
         return noteService.actualizarNota(crearNota, id);
     }
 
-    //Borrar todas las notas
+    // Borrar todas las notas
     @DeleteMapping("/notes")
     void borrarNotas() {
         logger.info("he entrado por DELETE/notes");
         noteService.borrarTodasNotas();
     }
 
-    //Borrar una específica
+    // Borrar una específica
     @DeleteMapping("/notes/{id}")
     void borrarNota(@PathVariable Long id) {
         logger.info("he entrado por DELETE/notes/{id}");
